@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas de Procesamiento de Texto y Transformador de Datos</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4; /* Fondo claro */
+            color: #333; /* Texto oscuro */
+            text-align: center;
+        }
+        #menu {
+            background-color: #1a1a2e; /* Fondo oscuro */
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        #menu a {
+            color: #76ff03; /* Verde radiactivo */
+            text-decoration: none; /* Sin subrayado */
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        #menu a:hover {
+            color: #00ffcc; /* Cambiar color al pasar el mouse */
+        }
+        .tool {
+            display: none; /* Ocultar todas las herramientas por defecto */
+            background-color: #ffffff; /* Fondo blanco para las herramientas */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            margin-bottom: 20px;
+        }
+        .active {
+            display: block; /* Mostrar solo la herramienta activa */
+        }
+        textarea {
+            width: 80%;
+            border-radius: 5px;
+            padding: 10px;
+            resize: none; /* Desactivar el redimensionamiento */
+            background-color: #f0f0f0; /* Fondo claro para textarea */
+            color: #333; /* Texto oscuro en textarea */
+            border: 2px solid #76ff03; /* Borde verde radiactivo */
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #76ff03; /* Botón verde radiactivo */
+            color: #fff; /* Texto blanco */
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px; /* Espaciado entre botones */
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra del botón */
+        }
+        button:hover {
+            background-color: #64dd17; /* Efecto hover más oscuro */
+            transform: translateY(-2px); /* Efecto de elevación */
+        }
+        button:active {
+            transform: translateY(0); /* Regresar a la posición original */
+        }
+        .result-container {
+            background-color: #f0f0f0; /* Fondo claro para resultados */
+            color: #333; /* Texto oscuro en resultados */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            white-space: pre-wrap; /* Mantener el formato del texto */
+            max-width: 80%;
+            margin: 20px auto; /* Centrar el contenedor */
+            overflow: auto;
+        }
+        h1 {
+            color: #1a1a2e; /* Azul oscuro */
+            margin-bottom: 20px;
+            animation: fadeIn 2s; /* Añadir animación al título */
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .dev-link {
+            color: #76ff03; /* Verde radiactivo */
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .dev-link:hover {
+            color: #00ffcc; /* Cambiar color al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+
+<div id="menu">
+    <a href="#tool1" onclick="mostrarHerramienta('tool1')">Procesador de Texto</a>
+    <a href="#tool2" onclick="mostrarHerramienta('tool2')">Reemplazar Duplicados</a>
+    <a href="#tool3" onclick="mostrarHerramienta('tool3')">Transformador de Datos de Tarjeta</a>
+</div>
+
+<h1>Dev_By: <span class="dev-link" onclick="window.open('https://t.me/Retry404', '_blank')">@Retry404</span></h1>
+
+<div id="tool1" class="tool active">
+    <h2>Procesador de Texto</h2>
+    <form onsubmit="event.preventDefault(); procesarDatos();">
+        <label for="fileInput1">Selecciona un archivo de texto:</label><br>
+        <input type="file" id="fileInput1" accept=".txt"><br><br>
+        <label for="inputText1">O ingresa texto directamente:</label><br>
+        <textarea id="inputText1" placeholder="Ingresa tu texto aquí..."></textarea><br>
+        <button type="submit">Procesar</button>
+        <button type="button" onclick="copiarResultados()">Copiar Resultados</button>
+    </form>
+    <h2>Resultado:</h2>
+    <div class="result-container">
+        <pre id="resultado"></pre>
+    </div>
+</div>
+
+<div id="tool2" class="tool">
+    <h2>Reemplazar duplicados de |</h2>
+    <form onsubmit="event.preventDefault(); procesarTexto();">
+        <textarea id="textInput" placeholder="Pega o escribe tu texto aquí..."></textarea>
+        <br>
+        <button type="button" onclick="procesarTexto()">Procesar Texto</button>
+        <input type="file" id="fileInput2" accept=".txt" onchange="cargarArchivo(event)">
+        <button type="button" onclick="copiarTextoModificado()">Copiar Resultados</button>
+        <h2>Texto Modificado:</h2>
+        <div class="result-container">
+            <pre id="textOutput" readonly></pre>
+        </div>
+    </form>
+</div>
+
+<div id="tool3" class="tool">
+    <h2>Transformador de Datos de Tarjeta</h2>
+    <textarea id="inputDatos" rows="10" cols="50" placeholder="Ingresa los datos aquí..."></textarea><br>
+    <button onclick="transformarDatos()">Transformar</button>
+    <button onclick="copiarResultados()">Copiar Resultados</button>
+    <h2>Resultados:</h2>
+    <div class="result-container">
+        <pre id="resultadoTarjeta"></pre>
+    </div>
+</div>
+
+<script>
+    function mostrarHerramienta(tool) {
+        const tools = document.querySelectorAll('.tool');
+        tools.forEach(t => t.classList.remove('active'));
+        document.getElementById(tool).classList.add('active');
+    }
+
+    // Código del Procesador de Texto
+    function procesarDatos() {
+        const fileInput = document.getElementById("fileInput1");
+        const file = fileInput.files[0];
+        const inputText = document.getElementById("inputText1").value;
+
+        let contenido = inputText;
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                contenido += '\n' + event.target.result;
+                procesarContenido(contenido);
+            };
+            reader.readAsText(file);
+        } else {
+            procesarContenido(contenido);
+        }
+    }
+
+    function procesarContenido(contenido) {
+        const lineas = contenido.split('\n');
+        let resultadoFinal = '';
+
+        lineas.forEach(linea => {
+            linea = linea.replace(/[:;]/g, '|');
+            let resultado = linea
+                .replace(/[a-zA-Z]/g, '')
+                .replace(/\s+/g, '|')
+                .replace(/[\/\\]/g, '|')
+                .replace(/[^0-9|]/g, '');
+
+            const cantidadNumeros = (resultado.match(/[0-9]/g) || []).length;
+
+            if (linea.trim().match(/^[45]/)) {
+                if (resultado.length > 16) {
+                    resultado = resultado.slice(0, 16) + '|' + resultado.slice(16);
+                }
+            }
+
+            if (cantidadNumeros >= 20) {
+                resultadoFinal += resultado + '\n';
+            }
+        });
+
+        document.getElementById("resultado").innerText = resultadoFinal.trim();
+    }
+
+    function copiarResultados() {
+        const resultado = document.getElementById("resultado").innerText;
+        navigator.clipboard.writeText(resultado)
+            .then(() => {
+                alert("Resultados copiados al portapapeles!");
+            })
+            .catch(err => {
+                console.error("Error al copiar: ", err);
+            });
+    }
+
+    function limpiarLineas(texto) {
+        return texto.replace(/^[^\d]*(\d.*)$/gm, '$1');
+    }
+
+    function reemplazarDuplicados(texto) {
+        return texto.replace(/\|\|+/g, '|');
+    }
+
+    function eliminarLineasDuplicadas(texto) {
+        const lineas = texto.split('\n');
+        const lineasUnicas = [...new Set(lineas)];
+        return lineasUnicas.join('\n');
+    }
+
+    function procesarTexto() {
+        const texto = document.getElementById('textInput').value;
+        if (!texto) {
+            alert("Por favor, ingresa texto o selecciona un archivo.");
+            return;
+        }
+        let textoLimpio = limpiarLineas(texto);
+        textoLimpio = reemplazarDuplicados(textoLimpio);
+        const textoSinDuplicados = eliminarLineasDuplicadas(textoLimpio);
+        document.getElementById('textOutput').innerText = textoSinDuplicados;
+    }
+
+    function cargarArchivo(event) {
+        const archivo = event.target.files[0];
+        if (archivo) {
+            const lector = new FileReader();
+            lector.onload = function(e) {
+                document.getElementById('textInput').value = e.target.result;
+            };
+            lector.readAsText(archivo);
+        }
+    }
+
+    function copiarTextoModificado() {
+        const textoModificado = document.getElementById('textOutput').innerText;
+        navigator.clipboard.writeText(textoModificado)
+            .then(() => {
+                alert("Texto modificado copiado al portapapeles!");
+            })
+            .catch(err => {
+                console.error("Error al copiar: ", err);
+            });
+    }
+
+    // Código del Transformador de Datos de Tarjeta
+    function transformarDatos() {
+        const input = document.getElementById("inputDatos").value;
+        const lineas = input.split('\n');
+        const resultados = [];
+
+        const meses = {
+            '1': '01',
+            '2': '02',
+            '3': '03',
+            '4': '04',
+            '5': '05',
+            '6': '06',
+            '7': '07',
+            '8': '08',
+            '9': '09',
+            '10': '10',
+            '11': '11',
+            '12': '12'
+        };
+
+        const anios = {};
+        for (let i = 25; i <= 39; i++) {
+            anios[i] = 2000 + i; // Transformar 25 a 2025, 26 a 2026, etc.
+        }
+
+        lineas.forEach(linea => {
+            const partes = linea.split('|');
+            if (partes.length >= 4) {
+                const card_number = partes[0];
+                const month = meses[partes[1]] || partes[1]; // Reemplazar mes
+                const year = anios[partes[2]] || partes[2]; // Reemplazar año
+                
+                const cvv = partes[3].match(/^\d{3,4}/) ? partes[3].match(/^\d{3,4}/)[0] : '';
+
+                if (cvv) {
+                    resultados.push(`${card_number}|${month}|${year}|${cvv}`);
+                }
+            }
+        });
+
+        const resultadoText = resultados.join('\n');
+        document.getElementById("resultadoTarjeta").innerText = resultadoText;
+    }
+</script>
+
+</body>
+</html>
