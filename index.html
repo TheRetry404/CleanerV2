@@ -5,104 +5,227 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Herramientas de Procesamiento de Texto y Transformador de Datos</title>
     <style>
+        :root {
+            --neon-green: #76ff03;
+            --neon-blue: #00ffcc;
+            --dark-bg: #1a1a2e;
+            --light-bg: #f0f0f0;
+            --text-color: #e0e0e0; /* Texto claro para contrastar con fondo oscuro */
+            --tool-bg: #2b2b40; /* Fondo más oscuro para las herramientas */
+            --input-bg: #3a3a50; /* Fondo oscuro para inputs/textareas */
+            --border-color: #555;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial', sans-serif; /* Cambiar a 'Roboto Mono', sans-serif; o 'Orbitron', sans-serif; si se carga */
             margin: 0;
             padding: 20px;
-            background-color: #f4f4f4; /* Fondo claro */
-            color: #333; /* Texto oscuro */
+            background: linear-gradient(135deg, #1a1a2e, #0f0f1f, #1a1a2e); /* Degradado oscuro */
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite; /* Animación de fondo */
+            color: var(--text-color);
             text-align: center;
+            min-height: 100vh; /* Asegura que el degradado cubra toda la altura */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
-        #menu {
-            background-color: #1a1a2e; /* Fondo oscuro */
-            padding: 15px;
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Scrollbar styles for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--neon-green);
             border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--neon-blue);
+        }
+
+        #menu {
+            background-color: var(--dark-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(118, 255, 3, 0.5), 0 0 40px rgba(0, 255, 204, 0.3); /* Brillo de neón */
+            border: 1px solid rgba(118, 255, 3, 0.3);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
         }
         #menu a {
-            color: #76ff03; /* Verde radiactivo */
-            text-decoration: none; /* Sin subrayado */
-            margin: 0 15px;
+            color: var(--neon-green);
+            text-decoration: none;
+            margin: 0; /* Ajustado por gap */
             font-weight: bold;
-            transition: color 0.3s;
+            font-size: 1.1em;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
         }
         #menu a:hover {
-            color: #00ffcc; /* Cambiar color al pasar el mouse */
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-blue); /* Efecto de brillo al pasar el mouse */
         }
         .tool {
-            display: none; /* Ocultar todas las herramientas por defecto */
-            background-color: #ffffff; /* Fondo blanco para las herramientas */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
-            margin-bottom: 20px;
+            display: none;
+            background-color: var(--tool-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(118, 255, 3, 0.4), 0 0 60px rgba(0, 255, 204, 0.2); /* Sombra de neón más intensa */
+            margin-bottom: 30px;
+            max-width: 900px;
+            width: 100%;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            opacity: 0; /* Para animación de entrada */
+            transform: translateY(20px); /* Para animación de entrada */
+            animation: fadeAndSlideIn 0.8s forwards;
+            animation-delay: 0.2s; /* Pequeño retraso al mostrar */
         }
-        .active {
-            display: block; /* Mostrar solo la herramienta activa */
+
+        @keyframes fadeAndSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tool.active {
+            display: block;
         }
         textarea {
-            width: 80%;
-            border-radius: 5px;
-            padding: 10px;
-            resize: none; /* Desactivar el redimensionamiento */
-            background-color: #f0f0f0; /* Fondo claro para textarea */
-            color: #333; /* Texto oscuro en textarea */
-            border: 2px solid #76ff03; /* Borde verde radiactivo */
-            font-size: 16px;
-            margin-bottom: 10px;
+            width: calc(100% - 20px); /* Asegura que ocupe casi todo el ancho disponible del .tool */
+            max-width: 700px;
+            border-radius: 8px;
+            padding: 15px;
+            resize: vertical;
+            min-height: 150px;
+            background-color: var(--input-bg);
+            color: var(--neon-green); /* Texto en neón */
+            border: 2px solid var(--neon-green);
+            font-size: 1em;
+            margin-bottom: 15px;
+            box-shadow: inset 0 0 10px rgba(118, 255, 3, 0.3); /* Sombra interna para profundidad */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: inset 0 0 15px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.4);
         }
         button {
-            background-color: #76ff03; /* Botón verde radiactivo */
-            color: #fff; /* Texto blanco */
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue)); /* Degradado en botones */
+            color: var(--dark-bg); /* Texto oscuro para contraste */
             border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
+            border-radius: 8px;
+            padding: 12px 25px;
             cursor: pointer;
-            font-size: 16px;
-            margin: 5px; /* Espaciado entre botones */
-            transition: background-color 0.3s, transform 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra del botón */
+            font-size: 1.1em;
+            margin: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(118, 255, 3, 0.4); /* Sombra de botón */
+            font-weight: bold;
+            text-transform: uppercase;
         }
         button:hover {
-            background-color: #64dd17; /* Efecto hover más oscuro */
-            transform: translateY(-2px); /* Efecto de elevación */
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-green)); /* Invierte degradado */
+            transform: translateY(-3px) scale(1.02); /* Efecto de elevación y ligero crecimiento */
+            box-shadow: 0 6px 20px rgba(0, 255, 204, 0.6);
         }
         button:active {
-            transform: translateY(0); /* Regresar a la posición original */
+            transform: translateY(0) scale(1);
+            box-shadow: 0 2px 10px rgba(118, 255, 3, 0.3);
         }
         .result-container {
-            background-color: #f0f0f0; /* Fondo claro para resultados */
-            color: #333; /* Texto oscuro en resultados */
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
-            white-space: pre-wrap; /* Mantener el formato del texto */
-            max-width: 80%;
-            margin: 20px auto; /* Centrar el contenedor */
+            background-color: var(--input-bg);
+            color: var(--neon-blue); /* Texto de resultado en neón azul */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 15px rgba(0, 255, 204, 0.3); /* Sombra interna para resultado */
+            white-space: pre-wrap;
+            max-width: calc(100% - 40px); /* Ajustar ancho para padding */
+            margin: 25px auto;
             overflow: auto;
+            text-align: left;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            font-family: 'Roboto Mono', monospace; /* Fuente monoespaciada para resultados */
+            font-size: 0.95em;
+            max-height: 300px; /* Limitar altura para evitar desbordamiento */
         }
         h1 {
-            color: #1a1a2e; /* Azul oscuro */
+            color: var(--neon-blue);
+            margin-bottom: 25px;
+            font-size: 2.5em;
+            text-shadow: 0 0 15px var(--neon-blue), 0 0 30px rgba(0, 255, 204, 0.6); /* Brillo en el título */
+            animation: fadeIn 2s ease forwards;
+            letter-spacing: 2px;
+        }
+        h2 {
+            color: var(--neon-green);
             margin-bottom: 20px;
-            animation: fadeIn 2s; /* Añadir animación al título */
+            font-size: 1.8em;
+            text-shadow: 0 0 10px var(--neon-green);
         }
         @keyframes fadeIn {
             from {
                 opacity: 0;
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
+                transform: translateY(0);
             }
         }
         .dev-link {
-            color: #76ff03; /* Verde radiactivo */
+            color: var(--neon-green);
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
         .dev-link:hover {
-            color: #00ffcc; /* Cambiar color al pasar el mouse */
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        input[type="file"] {
+            margin: 15px 0;
+            padding: 10px;
+            border: 2px solid var(--neon-green);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 0.9em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 0 8px rgba(118, 255, 3, 0.2);
+        }
+        input[type="file"]:hover {
+            border-color: var(--neon-blue);
+            box-shadow: inset 0 0 12px rgba(0, 255, 204, 0.4);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--text-color);
+            font-size: 1.05em;
         }
     </style>
 </head>
@@ -111,47 +234,49 @@
 <div id="menu">
     <a href="#tool1" onclick="mostrarHerramienta('tool1')">Procesador de Texto</a>
     <a href="#tool2" onclick="mostrarHerramienta('tool2')">Reemplazar Duplicados</a>
-    <a href="#tool3" onclick="mostrarHerramienta('tool3')">Transformador de Datos de Tarjeta</a>
+    <a href="#tool3" onclick="mostrarHerramienta('tool3')">Transformador de Datos</a>
 </div>
 
 <h1>Dev_By: <span class="dev-link" onclick="window.open('https://t.me/Retry404', '_blank')">@Retry404</span></h1>
 
-<div id="tool1" class="tool active">
+<div id="tool1" class="tool">
     <h2>Procesador de Texto</h2>
     <form onsubmit="event.preventDefault(); procesarDatos();">
         <label for="fileInput1">Selecciona un archivo de texto:</label><br>
-        <input type="file" id="fileInput1" accept=".txt"><br><br>
+        <input type="file" id="fileInput1" accept=".txt"><br>
         <label for="inputText1">O ingresa texto directamente:</label><br>
         <textarea id="inputText1" placeholder="Ingresa tu texto aquí..."></textarea><br>
         <button type="submit">Procesar</button>
-        <button type="button" onclick="copiarResultados()">Copiar Resultados</button>
+        <button type="button" onclick="copiarResultadosTool1()">Copiar Resultados</button>
     </form>
     <h2>Resultado:</h2>
     <div class="result-container">
-        <pre id="resultado"></pre>
+        <pre id="resultadoTool1"></pre>
     </div>
 </div>
 
 <div id="tool2" class="tool">
-    <h2>Reemplazar duplicados de |</h2>
-    <form onsubmit="event.preventDefault(); procesarTexto();">
-        <textarea id="textInput" placeholder="Pega o escribe tu texto aquí..."></textarea>
-        <br>
+    <h2>Reemplazar Duplicados y Limpiar</h2>
+    <form onsubmit="event.preventDefault();">
+        <label for="textInput">Pega o escribe tu texto aquí:</label><br>
+        <textarea id="textInput" placeholder="Pega o escribe tu texto aquí..."></textarea><br>
+        <label for="fileInput2">O selecciona un archivo de texto:</label><br>
+        <input type="file" id="fileInput2" accept=".txt" onchange="cargarArchivoYProcesar(event)"><br>
         <button type="button" onclick="procesarTexto()">Procesar Texto</button>
-        <input type="file" id="fileInput2" accept=".txt" onchange="cargarArchivo(event)">
-        <button type="button" onclick="copiarTextoModificado()">Copiar Resultados</button>
-        <h2>Texto Modificado:</h2>
-        <div class="result-container">
-            <pre id="textOutput" readonly></pre>
-        </div>
+        <button type="button" onclick="copiarResultadosTool2()">Copiar Resultados</button>
     </form>
+    <h2>Texto Modificado:</h2>
+    <div class="result-container">
+        <pre id="textOutput"></pre>
+    </div>
 </div>
 
 <div id="tool3" class="tool">
     <h2>Transformador de Datos de Tarjeta</h2>
-    <textarea id="inputDatos" rows="10" cols="50" placeholder="Ingresa los datos aquí..."></textarea><br>
+    <label for="inputDatos">Ingresa los datos aquí:</label><br>
+    <textarea id="inputDatos" placeholder="Ej: 1234567890123456|01|25|123"></textarea><br>
     <button onclick="transformarDatos()">Transformar</button>
-    <button onclick="copiarResultados()">Copiar Resultados</button>
+    <button onclick="copiarResultadosTool3()">Copiar Resultados</button>
     <h2>Resultados:</h2>
     <div class="result-container">
         <pre id="resultadoTarjeta"></pre>
@@ -159,154 +284,195 @@
 </div>
 
 <script>
-    function mostrarHerramienta(tool) {
+    // Inicializar la primera herramienta visible al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        mostrarHerramienta('tool1');
+    });
+
+    function mostrarHerramienta(toolId) {
         const tools = document.querySelectorAll('.tool');
-        tools.forEach(t => t.classList.remove('active'));
-        document.getElementById(tool).classList.add('active');
+        tools.forEach(t => {
+            t.classList.remove('active');
+            t.style.animation = 'none'; // Reset animation
+            t.offsetHeight; // Trigger reflow
+            t.style.animation = null; // Re-enable animation
+        });
+        document.getElementById(toolId).classList.add('active');
     }
 
-    // Código del Procesador de Texto
+    // --- Funciones para el Procesador de Texto (Tool 1) ---
     function procesarDatos() {
         const fileInput = document.getElementById("fileInput1");
         const file = fileInput.files[0];
         const inputText = document.getElementById("inputText1").value;
 
-        let contenido = inputText;
         if (file) {
             const reader = new FileReader();
             reader.onload = function(event) {
-                contenido += '\n' + event.target.result;
-                procesarContenido(contenido);
+                procesarContenidoTool1(event.target.result);
             };
             reader.readAsText(file);
+        } else if (inputText.trim() !== '') {
+            procesarContenidoTool1(inputText);
         } else {
-            procesarContenido(contenido);
+            alert("Por favor, ingresa texto o selecciona un archivo para procesar.");
+            document.getElementById("resultadoTool1").innerText = '';
         }
     }
 
-    function procesarContenido(contenido) {
+    function procesarContenidoTool1(contenido) {
         const lineas = contenido.split('\n');
         let resultadoFinal = '';
 
         lineas.forEach(linea => {
-            linea = linea.replace(/[:;]/g, '|');
-            let resultado = linea
-                .replace(/[a-zA-Z]/g, '')
-                .replace(/\s+/g, '|')
-                .replace(/[\/\\]/g, '|')
-                .replace(/[^0-9|]/g, '');
+            let processedLine = linea.replace(/[:;]/g, '|'); // Reemplazar : y ; con |
+            processedLine = processedLine
+                .replace(/[a-zA-Z]/g, '') // Eliminar letras
+                .replace(/\s+/g, '|')    // Reemplazar espacios múltiples con un solo |
+                .replace(/[\/\\]/g, '|') // Reemplazar / y \ con |
+                .replace(/[^0-9|]/g, ''); // Eliminar cualquier caracter que no sea número o |
 
-            const cantidadNumeros = (resultado.match(/[0-9]/g) || []).length;
+            // Eliminar múltiples | consecutivas
+            processedLine = processedLine.replace(/\|\|+/g, '|');
 
-            if (linea.trim().match(/^[45]/)) {
-                if (resultado.length > 16) {
-                    resultado = resultado.slice(0, 16) + '|' + resultado.slice(16);
+            // Asegurar que no empiece ni termine con |
+            processedLine = processedLine.replace(/^\||\|$/g, '');
+
+            const cantidadNumeros = (processedLine.match(/[0-9]/g) || []).length;
+
+            // Lógica para insertar '|' después de 16 caracteres si empieza con 4 o 5
+            if (linea.trim().match(/^[45]/) && processedLine.length > 16) {
+                const parts = processedLine.split('|');
+                if (parts[0] && parts[0].length >= 16) {
+                    processedLine = parts[0].slice(0, 16) + '|' + parts[0].slice(16) + (parts.length > 1 ? '|' + parts.slice(1).join('|') : '');
+                    processedLine = processedLine.replace(/\|\|+/g, '|'); // Limpiar dobles pipes si se crearon
                 }
             }
 
-            if (cantidadNumeros >= 20) {
-                resultadoFinal += resultado + '\n';
+            if (cantidadNumeros >= 15) { // Un número de tarjeta típico tiene 16 dígitos, ajustado a 15 por flexibilidad
+                resultadoFinal += processedLine + '\n';
             }
         });
 
-        document.getElementById("resultado").innerText = resultadoFinal.trim();
+        document.getElementById("resultadoTool1").innerText = resultadoFinal.trim();
     }
 
-    function copiarResultados() {
-        const resultado = document.getElementById("resultado").innerText;
+    function copiarResultadosTool1() {
+        const resultado = document.getElementById("resultadoTool1").innerText;
+        if (resultado.trim() === '') {
+            alert("No hay resultados para copiar.");
+            return;
+        }
         navigator.clipboard.writeText(resultado)
             .then(() => {
-                alert("Resultados copiados al portapapeles!");
+                alert("Resultados del Procesador de Texto copiados al portapapeles! ✅");
             })
             .catch(err => {
                 console.error("Error al copiar: ", err);
+                alert("Hubo un error al copiar los resultados. Inténtalo de nuevo.");
             });
     }
 
+    // --- Funciones para Reemplazar Duplicados (Tool 2) ---
     function limpiarLineas(texto) {
+        // Elimina caracteres al inicio de la línea hasta el primer dígito
         return texto.replace(/^[^\d]*(\d.*)$/gm, '$1');
     }
 
-    function reemplazarDuplicados(texto) {
+    function reemplazarDuplicadosPipes(texto) {
+        // Reemplaza múltiples '|' consecutivas por una sola
         return texto.replace(/\|\|+/g, '|');
     }
 
     function eliminarLineasDuplicadas(texto) {
-        const lineas = texto.split('\n');
+        const lineas = texto.split('\n').map(line => line.trim()).filter(line => line !== '');
         const lineasUnicas = [...new Set(lineas)];
         return lineasUnicas.join('\n');
     }
 
     function procesarTexto() {
         const texto = document.getElementById('textInput').value;
-        if (!texto) {
-            alert("Por favor, ingresa texto o selecciona un archivo.");
+        if (!texto.trim()) {
+            alert("Por favor, ingresa texto o selecciona un archivo para procesar.");
+            document.getElementById('textOutput').innerText = '';
             return;
         }
         let textoLimpio = limpiarLineas(texto);
-        textoLimpio = reemplazarDuplicados(textoLimpio);
+        textoLimpio = reemplazarDuplicadosPipes(textoLimpio);
         const textoSinDuplicados = eliminarLineasDuplicadas(textoLimpio);
         document.getElementById('textOutput').innerText = textoSinDuplicados;
     }
 
-    function cargarArchivo(event) {
+    function cargarArchivoYProcesar(event) {
         const archivo = event.target.files[0];
         if (archivo) {
             const lector = new FileReader();
             lector.onload = function(e) {
                 document.getElementById('textInput').value = e.target.result;
+                procesarTexto(); // Procesa el texto automáticamente después de cargarlo
             };
             lector.readAsText(archivo);
         }
     }
 
-    function copiarTextoModificado() {
+    function copiarResultadosTool2() {
         const textoModificado = document.getElementById('textOutput').innerText;
+        if (textoModificado.trim() === '') {
+            alert("No hay texto modificado para copiar.");
+            return;
+        }
         navigator.clipboard.writeText(textoModificado)
             .then(() => {
-                alert("Texto modificado copiado al portapapeles!");
+                alert("Texto modificado copiado al portapapeles! ✅");
             })
             .catch(err => {
                 console.error("Error al copiar: ", err);
+                alert("Hubo un error al copiar el texto modificado. Inténtalo de nuevo.");
             });
     }
 
-    // Código del Transformador de Datos de Tarjeta
+    // --- Funciones para el Transformador de Datos de Tarjeta (Tool 3) ---
     function transformarDatos() {
         const input = document.getElementById("inputDatos").value;
         const lineas = input.split('\n');
         const resultados = [];
 
         const meses = {
-            '1': '01',
-            '2': '02',
-            '3': '03',
-            '4': '04',
-            '5': '05',
-            '6': '06',
-            '7': '07',
-            '8': '08',
-            '9': '09',
-            '10': '10',
-            '11': '11',
-            '12': '12'
+            '1': '01', '2': '02', '3': '03', '4': '04', '5': '05',
+            '6': '06', '7': '07', '8': '08', '9': '09', '10': '10',
+            '11': '11', '12': '12'
         };
 
         const anios = {};
-        for (let i = 25; i <= 39; i++) {
-            anios[i] = 2000 + i; // Transformar 25 a 2025, 26 a 2026, etc.
+        for (let i = 0; i <= 99; i++) { // Cubre años de '00' a '99'
+            const yearStr = i < 10 ? '0' + i : i.toString();
+            // Asume que años '00'-'29' son 2000s y '30'-'99' son 1900s, ajustar según necesidad
+            const fullYear = i >= 30 ? '19' + yearStr : '20' + yearStr;
+            anios[yearStr] = fullYear;
         }
+
 
         lineas.forEach(linea => {
             const partes = linea.split('|');
-            if (partes.length >= 4) {
-                const card_number = partes[0];
-                const month = meses[partes[1]] || partes[1]; // Reemplazar mes
-                const year = anios[partes[2]] || partes[2]; // Reemplazar año
-                
-                const cvv = partes[3].match(/^\d{3,4}/) ? partes[3].match(/^\d{3,4}/)[0] : '';
+            // Validar que haya al menos 4 partes y que el número de tarjeta sea numérico y de longitud razonable
+            if (partes.length >= 4 && /^\d{13,19}$/.test(partes[0].trim())) { // Números de tarjeta entre 13 y 19 dígitos
+                const card_number = partes[0].trim();
+                let month = partes[1].trim();
+                let year = partes[2].trim();
+                const cvvMatch = partes[3].trim().match(/^\d{3,4}$/);
+                const cvv = cvvMatch ? cvvMatch[0] : '';
 
-                if (cvv) {
+
+                // Transformar mes si es necesario (ej. '1' a '01')
+                month = meses[month] || (month.length === 1 && !isNaN(month) ? '0' + month : month);
+                // Transformar año (ej. '25' a '2025')
+                year = anios[year] || year;
+
+                // Asegurarse de que month y year tengan el formato correcto
+                if (month.length === 1 && !isNaN(month)) month = '0' + month; // Asegurar 2 dígitos para el mes
+                if (year.length === 2 && anios[year]) year = anios[year]; // Transformar si es un año de 2 dígitos válido
+
+                if (card_number && month && year && cvv && month.length === 2 && year.length === 4) {
                     resultados.push(`${card_number}|${month}|${year}|${cvv}`);
                 }
             }
@@ -314,6 +480,22 @@
 
         const resultadoText = resultados.join('\n');
         document.getElementById("resultadoTarjeta").innerText = resultadoText;
+    }
+
+    function copiarResultadosTool3() {
+        const resultado = document.getElementById("resultadoTarjeta").innerText;
+        if (resultado.trim() === '') {
+            alert("No hay resultados para copiar.");
+            return;
+        }
+        navigator.clipboard.writeText(resultado)
+            .then(() => {
+                alert("Resultados del Transformador de Datos de Tarjeta copiados al portapapeles! ✅");
+            })
+            .catch(err => {
+                console.error("Error al copiar: ", err);
+                alert("Hubo un error al copiar los resultados. Inténtalo de nuevo.");
+            });
     }
 </script>
 
